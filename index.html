@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>தாஸ் பொது சேவை மையம் - சேவை விபரங்கள் & ஆவணங்கள்</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #4F46E5; --primary-dark: #4338CA; --secondary: #D97706; --secondary-dark: #B45309;
+            --success: #059669; --danger: #DC2626; --light: #F3F4F6; --dark: #1F2937; --gray: #6B7280;
+            --purple: #8E44AD; --purple-dark: #6C3483;
+        }
+        body {
+            font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+            min-height: 100vh; padding: 20px; color: var(--dark);
+        }
+        .container {
+            max-width: 1200px; margin: 0 auto; background: white; border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white; padding: 25px 30px; text-align: center; position: relative;
+        }
+        .logo-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px; }
+        .logo {
+            width: 60px; height: 60px; background: white; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 30px; font-weight: bold;
+            color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .header-text h1 { font-size: 26px; margin-bottom: 8px; }
+        .header-text p { font-size: 16px; opacity: 0.9; }
+        .contact-info { display: flex; justify-content: center; gap: 20px; margin-top: 15px; flex-wrap: wrap; }
+        .contact-item {
+            display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1);
+            padding: 8px 15px; border-radius: 50px; backdrop-filter: blur(10px); font-size: 14px;
+        }
+        .main-content { padding: 30px; }
+        .service-selection-section { margin-bottom: 30px; }
+        .section-title {
+            color: var(--primary); font-size: 24px; margin-bottom: 20px; padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary); display: flex; align-items: center; justify-content: space-between;
+        }
+        .section-title i { font-size: 20px; }
+        .title-actions { display: flex; gap: 8px; }
+        .title-btn {
+            background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 6px;
+            cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 5px;
+        }
+        .title-btn:hover { background: var(--primary-dark); }
+        .service-buttons-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px;
+        }
+        .service-btn {
+            background: white; border: 2px solid #E5E7EB; border-radius: 10px; padding: 20px; text-align: center;
+            cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center;
+            gap: 10px; position: relative;
+        }
+        .service-btn:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .service-btn.active { border-color: var(--primary); background: #F0F9FF; }
+        .service-btn.custom-service { border-color: var(--success); border-style: dashed; }
+        .service-icon { font-size: 30px; color: var(--primary); margin-bottom: 5px; }
+        .service-btn-name { font-size: 16px; font-weight: 600; color: var(--dark); text-align: center; }
+        .service-btn-price { font-size: 18px; font-weight: bold; color: var(--success); }
+        .service-btn-category {
+            font-size: 12px; color: var(--gray); background: #F3F4F6; padding: 3px 10px; border-radius: 10px;
+        }
+        .delete-service-btn {
+            position: absolute; top: 8px; right: 8px; background: var(--danger); color: white; border: none;
+            width: 22px; height: 22px; border-radius: 50%; cursor: pointer; display: none; align-items: center;
+            justify-content: center; font-size: 12px;
+        }
+        .service-btn:hover .delete-service-btn { display: flex; }
+        .quick-search { margin-top: 20px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .search-box { position: relative; flex: 1; max-width: 400px; }
+        .search-input {
+            width: 100%; padding: 12px 45px 12px 15px; border: 2px solid #E5E7EB; border-radius: 50px;
+            font-size: 15px; background: white;
+        }
+        .search-input:focus { outline: none; border-color: var(--primary); }
+        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 16px; }
+        .category-filter { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 8px 15px; background: #F3F4F6; border: 2px solid #E5E7EB; border-radius: 20px; cursor: pointer;
+            font-size: 13px; font-weight: 500; transition: all 0.3s;
+        }
+        .filter-btn:hover { border-color: var(--primary); background: #E0E7FF; }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .service-info-section { margin-bottom: 30px; }
+        .service-card {
+            background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); padding: 25px;
+            margin-bottom: 25px; border: 2px solid #E5E7EB; transition: all 0.3s ease;
+        }
+        .service-card:hover { border-color: var(--primary); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .service-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+        .service-name-container { flex: 1; }
+        .service-name { font-size: 24px; font-weight: bold; color: var(--dark); margin-bottom: 8px; }
+        .service-category {
+            display: inline-block; background: #E0E7FF; color: var(--primary); padding: 5px 15px;
+            border-radius: 20px; font-size: 14px; font-weight: 600;
+        }
+        .service-price-container { text-align: right; }
+        .service-price-label { font-size: 14px; color: var(--gray); margin-bottom: 5px; }
+        .service-price { font-size: 32px; font-weight: bold; color: var(--success); }
+        .service-description {
+            margin: 20px 0; padding: 18px; background: #F9FAFB; border-radius: 10px; border-left: 4px solid var(--secondary);
+        }
+        .description-label { font-weight: 600; color: var(--dark); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .description-text { color: var(--gray); line-height: 1.6; font-size: 15px; }
+        .documents-section { margin-top: 25px; }
+        .documents-list { list-style: none; padding-left: 0; }
+        .document-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px; background: #F9FAFB; border-radius: 8px;
+            margin-bottom: 10px; border-left: 4px solid var(--primary); transition: all 0.3s;
+        }
+        .document-item:hover { background: #F3F4F6; transform: translateX(5px); }
+        .document-item i { color: var(--success); font-size: 16px; }
+        .edit-doc-btn {
+            background: transparent; border: none; color: var(--primary); cursor: pointer; padding: 5px;
+            border-radius: 4px; transition: all 0.3s;
+        }
+        .edit-doc-btn:hover { background: var(--primary); color: white; }
+        .add-document-btn {
+            background: var(--secondary); color: white; border: none; padding: 10px 20px; border-radius: 8px;
+            cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; font-size: 14px;
+        }
+        .add-document-btn:hover { background: var(--secondary-dark); }
+        .whatsapp-section {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); border-radius: 12px; padding: 25px;
+            color: white; margin-top: 30px;
+        }
+        .whatsapp-header { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+        .whatsapp-header i { font-size: 32px; }
+        .whatsapp-header h3 { font-size: 22px; font-weight: bold; }
+        .whatsapp-message-box {
+            background: rgba(255,255,255,0.1); border-radius: 10px; padding: 18px; margin: 18px 0; backdrop-filter: blur(10px);
+        }
+        .message-preview {
+            font-family: 'Arial', sans-serif; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;
+            margin: 15px 0; white-space: pre-wrap; line-height: 1.6; max-height: 250px; overflow-y: auto; font-size: 14px;
+        }
+        .customer-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .input-group { display: flex; flex-direction: column; }
+        .input-label { font-weight: 600; margin-bottom: 6px; font-size: 13px; }
+        .input-field {
+            padding: 10px; border: 2px solid rgba(255,255,255,0.3); border-radius: 8px;
+            background: rgba(255,255,255,0.1); color: white; font-size: 15px;
+        }
+        .input-field::placeholder { color: rgba(255,255,255,0.7); }
+        .input-field:focus { outline: none; border-color: white; }
+        .whatsapp-btn {
+            background: white; color: #25D366; border: none; padding: 14px 28px; border-radius: 10px;
+            font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px;
+            margin: 18px auto 0; transition: all 0.3s; width: 100%; justify-content: center;
+        }
+        .whatsapp-btn:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .whatsapp-test-btn {
+            background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 8px 15px;
+            border-radius: 6px; font-size: 13px; cursor: pointer; margin-top: 10px; display: flex; align-items: center; gap: 5px;
+        }
+        .whatsapp-test-btn:hover { background: rgba(255,255,255,0.3); }
+        .action-buttons {
+            display: flex; gap: 12px; justify-content: center; margin-top: 25px; padding: 20px; border-top: 1px solid #E5E7EB;
+        }
+        .action-btn {
+            padding: 12px 22px; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; transition: all 0.3s;
+        }
+        .btn-print { background: var(--primary); color: white; }
+        .btn-print:hover { background: var(--primary-dark); }
+        .btn-save { background: var(--success); color: white; }
+        .btn-save:hover { background: #047857; }
+        .btn-clear { background: var(--danger); color: white; }
+        .btn-clear:hover { background: #B91C1C; }
+        .btn-reset { background: var(--secondary); color: white; }
+        .btn-reset:hover { background: var(--secondary-dark); }
+        .customize-btn {
+            background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px;
+            cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: all 0.3s; font-size: 14px;
+        }
+        .customize-btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .footer { text-align: center; padding: 20px; background: var(--dark); color: white; margin-top: 30px; }
+        .footer p { margin: 5px 0; font-size: 14px; }
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white; border-radius: 12px; padding: 25px; max-width: 500px; width: 90%;
+            max-height: 80vh; overflow-y: auto;
+        }
+        .modal-header { font-size: 20px; font-weight: bold; color: var(--dark); margin-bottom: 15px; padding-bottom: 12px; border-bottom: 2px solid var(--primary); }
+        .modal-input { width: 100%; padding: 10px; border: 2px solid #E5E7EB; border-radius: 8px; font-size: 15px; margin-bottom: 12px; }
+        .modal-input:focus { outline: none; border-color: var(--primary); }
+        .modal-textarea { width: 100%; padding: 10px; border: 2px solid #E5E7EB; border-radius: 8px; font-size: 15px; margin-bottom: 12px; min-height: 80px; resize: vertical; font-family: 'Arial', sans-serif; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-add { flex: 1; padding: 10px; background: var(--success); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .btn-add:hover { background: #047857; }
+        .btn-cancel { flex: 1; padding: 10px; background: var(--gray); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .btn-cancel:hover { background: #4B5563; }
+        .service-counter { text-align: center; margin: 15px 0; color: var(--gray); font-size: 13px; }
+        .service-counter span { font-weight: bold; color: var(--primary); }
+        .new-service-btn {
+            background: linear-gradient(135deg, var(--success) 0%, #047857 100%); color: white; border: 2px dashed white;
+            border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 140px;
+        }
+        .new-service-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .new-service-icon { font-size: 40px; margin-bottom: 8px; }
+        .new-service-text { font-size: 16px; font-weight: 600; }
+        @media (max-width: 768px) {
+            .header { padding: 20px; }
+            .logo-container { flex-direction: column; text-align: center; }
+            .service-header { flex-direction: column; text-align: center; }
+            .service-price-container { text-align: center; }
+            .customer-inputs { grid-template-columns: 1fr; }
+            .contact-info { flex-direction: column; align-items: center; gap: 10px; }
+            .action-buttons { flex-direction: column; }
+            .main-content { padding: 20px; }
+            .service-price { font-size: 28px; }
+            .service-name { font-size: 22px; }
+            .section-title { font-size: 20px; flex-direction: column; align-items: flex-start; gap: 10px; }
+            .service-buttons-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+            .quick-search { flex-direction: column; align-items: stretch; }
+            .search-box { max-width: 100%; }
+            .whatsapp-btn { padding: 12px 20px; font-size: 15px; }
+        }
+        @media (max-width: 480px) {
+            .header-text h1 { font-size: 22px; }
+            .header-text p { font-size: 14px; }
+            .action-btn { padding: 10px 18px; font-size: 14px; }
+            .service-buttons-grid { grid-template-columns: 1fr; }
+            .modal-content { padding: 20px; }
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .service-card { animation: fadeIn 0.5s ease-out; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo">D</div>
+                <div class="header-text">
+                    <h1>தாஸ் பொது சேவை மையம்</h1>
+                    <p>Thoothukudi-1 - சேவை விபரங்கள் & தேவையான ஆவணங்கள்</p>
+                </div>
+            </div>
+            <div class="contact-info">
+                <div class="contact-item"><i class="fas fa-phone"></i><span>88 70 23 23 32</span></div>
+                <div class="contact-item"><i class="fas fa-phone"></i><span>98 43 23 23 24</span></div>
+                <div class="contact-item"><i class="fab fa-whatsapp"></i><span>WhatsApp: 9843232324</span></div>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="service-selection-section">
+                <h2 class="section-title">
+                    <div><i class="fas fa-list"></i> சேவைகளை தேர்ந்தெடுக்கவும்</div>
+                    <div class="title-actions">
+                        <button class="title-btn" onclick="openAddServiceModal()"><i class="fas fa-plus"></i> புதிய சேவை</button>
+                        <button class="title-btn" onclick="openEditServiceModal()" style="background: var(--secondary);"><i class="fas fa-edit"></i> சேவை திருத்து</button>
+                    </div>
+                </h2>
+                <div class="service-counter">
+                    மொத்த சேவைகள்: <span id="totalServicesCount">0</span> | 
+                    பயனர் சேர்க்கப்பட்டவை: <span id="customServicesCount">0</span> | 
+                    ரெடிமேட் சேவைகள்: <span id="predefinedServicesCount">10</span>
+                </div>
+                <div class="quick-search">
+                    <div class="search-box">
+                        <input type="text" class="search-input" id="serviceSearch" placeholder="🔍 சேவையை தேடவும்...">
+                        <div class="search-icon"><i class="fas fa-search"></i></div>
+                    </div>
+                    <div class="category-filter">
+                        <button class="filter-btn active" onclick="filterServices('all')">அனைத்தும்</button>
+                        <button class="filter-btn" onclick="filterServices('அரசு சேவை')">அரசு சேவை</button>
+                        <button class="filter-btn" onclick="filterServices('அச்சிடுதல்')">அச்சிடுதல்</button>
+                        <button class="filter-btn" onclick="filterServices('புகைப்படம்')">புகைப்படம்</button>
+                        <button class="filter-btn" onclick="filterServices('ஆவணம்')">ஆவணம்</button>
+                        <button class="filter-btn" onclick="filterServices('பாஸ்போர்ட்')">பாஸ்போர்ட்</button>
+                        <button class="filter-btn" onclick="filterServices('விசா')">விசா</button>
+                        <button class="filter-btn" onclick="filterServices('custom')">எனது சேவைகள்</button>
+                    </div>
+                </div>
+                <div class="service-buttons-grid" id="serviceButtonsGrid"></div>
+                <div class="service-buttons-grid">
+                    <div class="new-service-btn" onclick="openAddServiceModal()">
+                        <div class="new-service-icon"><i class="fas fa-plus-circle"></i></div>
+                        <div class="new-service-text">+ புதிய சேவை சேர்க்க</div>
+                        <div style="font-size: 13px; opacity: 0.8;">கிளிக் செய்யவும்</div>
+                    </div>
+                </div>
+            </div>
+            <div class="service-info-section">
+                <h2 class="section-title"><i class="fas fa-info-circle"></i> சேவை விபரங்கள்</h2>
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-name-container">
+                            <div class="service-name" id="serviceNameDisplay">சேவையை தேர்ந்தெடுக்கவும்</div>
+                            <div class="service-category" id="serviceCategoryDisplay">சேவை வகை</div>
+                        </div>
+                        <div class="service-price-container">
+                            <div class="service-price-label">சேவை கட்டணம்</div>
+                            <div class="service-price" id="servicePriceDisplay">₹0.00</div>
+                        </div>
+                    </div>
+                    <div class="service-description">
+                        <div class="description-label"><i class="fas fa-file-alt"></i> சேவை விளக்கம்</div>
+                        <div class="description-text" id="serviceDescriptionDisplay">மேலே உள்ள பட்டன்களில் இருந்து ஒரு சேவையை தேர்ந்தெடுக்கவும்</div>
+                    </div>
+                    <div class="documents-section">
+                        <label class="description-label"><i class="fas fa-file-alt"></i> தேவையான ஆவணங்கள்</label>
+                        <ul class="documents-list" id="documentsList">
+                            <li class="document-item"><i class="fas fa-check-circle"></i><span>சேவையை தேர்ந்தெடுக்கவும்</span></li>
+                        </ul>
+                        <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                            <button type="button" class="add-document-btn" onclick="openAddDocumentModal()"><i class="fas fa-plus"></i> புதிய ஆவணம்</button>
+                            <button type="button" class="customize-btn" onclick="openEditDocumentModal()"><i class="fas fa-edit"></i> ஆவணங்கள் திருத்து</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="whatsapp-section">
+                <div class="whatsapp-header">
+                    <i class="fab fa-whatsapp"></i>
+                    <h3>வாடிக்கையாளருக்கு வாட்சப்பில் அனுப்புக</h3>
+                </div>
+                <div class="whatsapp-message-box">
+                    <div class="customer-inputs">
+                        <div class="input-group">
+                            <label class="input-label">வாடிக்கையாளர் பெயர் *</label>
+                            <input type="text" id="customerName" class="input-field" placeholder="வாடிக்கையாளர் பெயர்">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">வாடிக்கையாளர் தொலைபேசி எண் *</label>
+                            <input type="tel" id="customerPhone" class="input-field" placeholder="9843232324">
+                        </div>
+                    </div>
+                    <button class="whatsapp-test-btn" onclick="testWhatsAppMessage()"><i class="fas fa-vial"></i> WhatsApp செய்தி சோதனை</button>
+                    <div style="margin-top: 15px;">
+                        <label class="input-label">செய்தி முன்னோட்டம்:</label>
+                        <div class="message-preview" id="messagePreview">வணக்கம்!
+
+தாஸ் பொது சேவை மையத்திற்கு நல்வரவு!
+
+சேவையை தேர்ந்தெடுக்கவும்...</div>
+                    </div>
+                    <button type="button" class="whatsapp-btn" onclick="sendWhatsAppMessage()"><i class="fab fa-whatsapp"></i> வாட்சப்பில் அனுப்பு</button>
+                </div>
+            </div>
+            
+            <!-- நன்றி அறிவிப்பு பகுதி - புதிதாக சேர்க்கப்பட்டது -->
+            <div class="whatsapp-section" style="background: linear-gradient(135deg, #8E44AD 0%, #6C3483 100%); margin-top: 30px;">
+                <div class="whatsapp-header">
+                    <i class="fas fa-hands-helping"></i>
+                    <h3>நேரில் வந்த வாடிக்கையாளருக்கு நன்றி அறிவிப்பு</h3>
+                </div>
+                <div class="whatsapp-message-box">
+                    <div class="customer-inputs">
+                        <div class="input-group">
+                            <label class="input-label">வாடிக்கையாளர் பெயர் *</label>
+                            <input type="text" id="thankYouCustomerName" class="input-field" placeholder="வாடிக்கையாளர் பெயர்">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">வாடிக்கையாளர் தொலைபேசி எண் *</label>
+                            <input type="tel" id="thankYouCustomerPhone" class="input-field" placeholder="9843232324">
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <label class="input-label">சேவைகளின் பெயர்கள் (காற்புள்ளியால் பிரிக்கவும்)</label>
+                        <input type="text" id="thankYouServices" class="input-field" placeholder="எ.கா: ஆதார் கார்டு, பாஸ்போர்ட் போட்டோ, பான் கார்டு">
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <label class="input-label">குறிப்பு எண்கள் (விரும்பினால்)</label>
+                        <input type="text" id="thankYouRefNumbers" class="input-field" placeholder="எ.கா: REF001, REF002">
+                    </div>
+                    <button class="whatsapp-test-btn" onclick="testThankYouMessage()"><i class="fas fa-vial"></i> நன்றி செய்தி சோதனை</button>
+                    <div style="margin-top: 15px;">
+                        <label class="input-label">நன்றி செய்தி முன்னோட்டம்:</label>
+                        <div class="message-preview" id="thankYouMessagePreview">வணக்கம் [பெயர்]!
+
+எங்கள் தாஸ் பொதுசேவை மையத்தை தேர்வு செய்து, வருகை புரிந்தமைக்கு, மிகவும் நன்றி.
+
+சேவைகள்: [சேவைகள்]
+குறிப்பு எண்கள்: [குறிப்பு எண்கள்]
+
+இந்த நாள் இனிதாக அமைய வாழ்த்துகிறோம்.
+
+நன்றி!
+தாஸ் பொது சேவை மையம்
+தூத்துக்குடி-1</div>
+                    </div>
+                    <button type="button" class="whatsapp-btn" onclick="sendThankYouMessage()" style="background: #9B59B6; color: white;"><i class="fab fa-whatsapp"></i> நன்றி செய்தி அனுப்பு</button>
+                </div>
+            </div>
+            <!-- நன்றி அறிவிப்பு பகுதி முடிவு -->
+            
+            <div class="action-buttons">
+                <button type="button" class="action-btn btn-print" onclick="printPage()"><i class="fas fa-print"></i> அச்சிடு</button>
+                <button type="button" class="action-btn btn-save" onclick="saveServiceInfo()"><i class="fas fa-save"></i> சேமி</button>
+                <button type="button" class="action-btn btn-reset" onclick="resetPredefinedServices()"><i class="fas fa-undo"></i> ரெடிமேட் மீட்டமை</button>
+                <button type="button" class="action-btn btn-clear" onclick="clearAll()"><i class="fas fa-trash"></i> அழி</button>
+            </div>
+        </div>
+        <div class="footer">
+            <p>நன்றி! மீண்டும் வருக!</p>
+            <p>தாஸ் பொது சேவை மையம், தூத்துக்குடி-1</p>
+            <p style="font-size: 13px; margin-top: 8px; opacity: 0.8;">© 2024 அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை</p>
+        </div>
+    </div>
+    <div class="modal" id="addDocumentModal">
+        <div class="modal-content">
+            <div class="modal-header">புதிய ஆவணம் சேர்க்க</div>
+            <input type="text" id="newDocument" class="modal-input" placeholder="ஆவணத்தின் பெயர் (எ.கா: வாக்குச்சீட்டு)" autofocus>
+            <div class="modal-buttons">
+                <button type="button" class="btn-add" onclick="addDocument()">சேர்க்க</button>
+                <button type="button" class="btn-cancel" onclick="closeAddDocumentModal()">ரத்து</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="editServiceModal">
+        <div class="modal-content">
+            <div class="modal-header">சேவையை திருத்து</div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">சேவையின் பெயர் *</label>
+                <input type="text" id="editServiceName" class="modal-input" placeholder="சேவை பெயர்">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">சேவை வகை *</label>
+                <select id="editServiceCategory" class="modal-input">
+                    <option value="அரசு சேவை">அரசு சேவை</option><option value="அச்சிடுதல்">அச்சிடுதல்</option>
+                    <option value="புகைப்படம்">புகைப்படம்</option><option value="ஆவணம்">ஆவணம்</option>
+                    <option value="பாஸ்போர்ட்">பாஸ்போர்ட்</option><option value="விசா">விசா</option>
+                    <option value="வாகனம்">வாகனம்</option><option value="கல்வி">கல்வி</option>
+                    <option value="மருத்துவம்">மருத்துவம்</option><option value="பிற">பிற</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">சேவை கட்டணம் (₹) *</label>
+                <input type="number" id="editServicePrice" class="modal-input" placeholder="0.00" min="0" step="0.01">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">சேவை விளக்கம்</label>
+                <textarea id="editServiceDescription" class="modal-textarea" placeholder="சேவை பற்றிய விபரங்கள்..."></textarea>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">தேவையான ஆவணங்கள் (ஒவ்வொரு வரியிலும் ஒன்று)</label>
+                <textarea id="editServiceDocuments" class="modal-textarea" placeholder="ஆதார் கார்டு
+புகைப்படம்
+முகவரி சான்று"></textarea>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">ஐகான்</label>
+                <select id="editServiceIcon" class="modal-input">
+                    <option value="fas fa-id-card">ஆதார் கார்டு</option><option value="fas fa-credit-card">பான் கார்டு</option>
+                    <option value="fas fa-camera">புகைப்படம்</option><option value="fas fa-passport">பாஸ்போர்ட்</option>
+                    <option value="fas fa-car">வாகனம்</option><option value="fas fa-graduation-cap">கல்வி</option>
+                    <option value="fas fa-file-contract">ஆவணம்</option><option value="fas fa-stamp">அட்டஸ்டேஷன்</option>
+                    <option value="fas fa-file-signature">கையொப்பம்</option><option value="fas fa-print">அச்சிடுதல்</option>
+                    <option value="fas fa-certificate">சான்றிதழ்</option><option value="fas fa-home">முகவரி</option>
+                    <option value="fas fa-briefcase">வேலை</option><option value="fas fa-plane">விசா</option>
+                    <option value="fas fa-heartbeat">மருத்துவம்</option><option value="fas fa-wallet">பணம்</option>
+                    <option value="fas fa-mobile-alt">மொபைல்</option><option value="fas fa-laptop">கம்ப்யூட்டர்</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-add" onclick="saveEditedService()">சேமி</button>
+                <button type="button" class="btn-cancel" onclick="closeEditServiceModal()">ரத்து</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="addServiceModal">
+        <div class="modal-content">
+            <div class="modal-header">புதிய சேவை சேர்க்க</div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">சேவையின் பெயர் *</label>
+                <input type="text" id="newServiceName" class="modal-input" placeholder="எ.கா: மகிழுந்து உரிமம் விண்ணப்பம்" autofocus>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">சேவை வகை *</label>
+                <select id="newServiceCategory" class="modal-input">
+                    <option value="அரசு சேவை">அரசு சேவை</option><option value="அச்சிடுதல்">அச்சிடுதல்</option>
+                    <option value="புகைப்படம்">புகைப்படம்</option><option value="ஆவணம்">ஆவணம்</option>
+                    <option value="பாஸ்போர்ட்">பாஸ்போர்ட்</option><option value="விசா">விசா</option>
+                    <option value="வாகனம்">வாகனம்</option><option value="கல்வி">கல்வி</option>
+                    <option value="மருத்துவம்">மருத்துவம்</option><option value="பிற">பிற</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">சேவை கட்டணம் (₹) *</label>
+                <input type="number" id="newServicePrice" class="modal-input" placeholder="0.00" min="0" step="0.01">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">சேவை விளக்கம்</label>
+                <textarea id="newServiceDescription" class="modal-textarea" placeholder="சேவை பற்றிய விபரங்கள்..."></textarea>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">தேவையான ஆவணங்கள் (ஒவ்வொரு வரியிலும் ஒன்று)</label>
+                <textarea id="newServiceDocuments" class="modal-textarea" placeholder="ஆதார் கார்டு
+புகைப்படம்
+முகவரி சான்று"></textarea>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">ஐகான்</label>
+                <select id="newServiceIcon" class="modal-input">
+                    <option value="fas fa-id-card">ஆதார் கார்டு</option><option value="fas fa-credit-card">பான் கார்டு</option>
+                    <option value="fas fa-camera">புகைப்படம்</option><option value="fas fa-passport">பாஸ்போர்ட்</option>
+                    <option value="fas fa-car">வாகனம்</option><option value="fas fa-graduation-cap">கல்வி</option>
+                    <option value="fas fa-file-contract">ஆவணம்</option><option value="fas fa-stamp">அட்டஸ்டேஷன்</option>
+                    <option value="fas fa-file-signature">கையொப்பம்</option><option value="fas fa-print">அச்சிடுதல்</option>
+                    <option value="fas fa-certificate">சான்றிதழ்</option><option value="fas fa-home">முகவரி</option>
+                    <option value="fas fa-briefcase">வேலை</option><option value="fas fa-plane">விசா</option>
+                    <option value="fas fa-heartbeat">மருத்துவம்</option><option value="fas fa-wallet">பணம்</option>
+                    <option value="fas fa-mobile-alt">மொபைல்</option><option value="fas fa-laptop">கம்ப்யூட்டர்</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-add" onclick="saveNewService()">சேவையை சேர்க்க</button>
+                <button type="button" class="btn-cancel" onclick="closeAddServiceModal()">ரத்து</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const originalPredefinedServices = [
+            { id: 1, name: "ஆதார் கார்டு பிரிண்ட்", category: "அரசு சேவை", price: 10.00, description: "ஆதார் கார்டை அச்சிடுதல் மற்றும் லேமினேஷன்", icon: "fas fa-id-card", documents: ["ஆதார் கார்டு (அசல் + நகல்)", "மொபைல் எண் (ஆதார் பதிவு செய்யப்பட்டது)", "புகைப்படம் (பாஸ்போர்ட் அளவு)"], isPredefined: true },
+            { id: 2, name: "பான் கார்டு விண்ணப்பம்", category: "அரசு சேவை", price: 120.00, description: "புதிய பான் கார்டிற்கான விண்ணப்பம் மற்றும் ஆவண தயாரிப்பு", icon: "fas fa-credit-card", documents: ["ஆதார் கார்டு", "புகைப்படம் 2 (பாஸ்போர்ட் அளவு)", "கையொப்பம்", "முகவரி சான்று"], isPredefined: true },
+            { id: 3, name: "பாஸ்போர்ட் போட்டோ", category: "புகைப்படம்", price: 50.00, description: "பாஸ்போர்ட் அளவு புகைப்படம் எடுத்தல் மற்றும் அச்சிடுதல்", icon: "fas fa-camera", documents: ["எந்த ஆவணமும் தேவையில்லை", "கருப்பு/நீல ஷர்ட் அணியவும்"], isPredefined: true },
+            { id: 4, name: "வோட்டர் ஐடி கார்டு", category: "அரசு சேவை", price: 25.00, description: "வோட்டர் ஐடி கார்டு விண்ணப்பம் மற்றும் ஆவண தயாரிப்பு", icon: "fas fa-vote-yea", documents: ["ஆதார் கார்டு", "புகைப்படம்", "வயது சான்று", "முகவரி சான்று"], isPredefined: true },
+            { id: 5, name: "ரேஷன் கார்டு விண்ணப்பம்", category: "அரசு சேவை", price: 80.00, description: "புதிய ரேஷன் கார்டிற்கான விண்ணப்பம்", icon: "fas fa-shopping-basket", documents: ["ஆதார் கார்டு", "வருமான சான்று", "முகவரி சான்று", "புகைப்படம்"], isPredefined: true },
+            { id: 6, name: "குடும்பச் சான்று", category: "ஆவணம்", price: 40.00, description: "குடும்பச் சான்று தயாரித்தல் மற்றும் அட்டஸ்டேஷன்", icon: "fas fa-home", documents: ["ஆதார் கார்டு (அனைத்து உறுப்பினர்கள்)", "வாக்காளர் ஐடி கார்டு", "முகவரி சான்று"], isPredefined: true },
+            { id: 7, name: "வருமான சான்று", category: "ஆவணம்", price: 60.00, description: "வருமான சான்று தயாரித்தல் மற்றும் சான்றிதழ்", icon: "fas fa-file-invoice-dollar", documents: ["ஆதார் கார்டு", "பான் கார்டு", "வரி ரசீது", "வேலை சான்று"], isPredefined: true },
+            { id: 8, name: "டிப்ளோமா அட்டஸ்டேஷன்", category: "ஆவணம்", price: 100.00, description: "கல்வி சான்றுகள் அட்டஸ்டேஷன்", icon: "fas fa-graduation-cap", documents: ["டிப்ளோமா/டிகிரி அசல்", "மார்க் ஷீட் அசல்", "ஆதார் கார்டு", "புகைப்படம்"], isPredefined: true },
+            { id: 9, name: "பாஸ்போர்ட் விண்ணப்பம்", category: "பாஸ்போர்ட்", price: 300.00, description: "புதிய பாஸ்போர்டிற்கான விண்ணப்பம் மற்றும் ஆவண தயாரிப்பு", icon: "fas fa-passport", documents: ["ஆதார் கார்டு", "பான் கார்டு", "பிறப்பு சான்று", "வாக்காளர் ஐடி", "புகைப்படம் 4"], isPredefined: true },
+            { id: 10, name: "விசா ஆவணங்கள்", category: "விசா", price: 500.00, description: "விசா விண்ணப்பத்திற்கான ஆவண தயாரிப்பு மற்றும் சான்றிதழ்", icon: "fas fa-plane", documents: ["பாஸ்போர்ட்", "பால் ஸ்லிப் 6 மாதம்", "வங்கி பேலன்ஸ்", "வேலை சான்று", "புகைப்படம்"], isPredefined: true }
+        ];
+        let predefinedServices = [...originalPredefinedServices];
+        let customServices = [];
+        let currentService = { id: 0, name: "சேவையை தேர்ந்தெடுக்கவும்", category: "சேவை வகை", price: 0, description: "மேலே உள்ள பட்டன்களில் இருந்து ஒரு சேவையை தேர்ந்தெடுக்கவும்", icon: "fas fa-question-circle", documents: ["சேவையை தேர்ந்தெடுக்கவும்"], customDocuments: [], isPredefined: false };
+        let activeFilter = 'all';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllServices(); updateDisplay(); updateWhatsAppMessage(); loadSavedData();
+            document.getElementById('serviceSearch').addEventListener('input', function() { renderServices(); });
+            document.getElementById('customerName').addEventListener('input', updateWhatsAppMessage);
+            document.getElementById('customerPhone').addEventListener('input', updateWhatsAppMessage);
+            
+            // நன்றி அறிவிப்பு event listeners
+            document.getElementById('thankYouCustomerName').addEventListener('input', updateThankYouMessage);
+            document.getElementById('thankYouCustomerPhone').addEventListener('input', updateThankYouMessage);
+            document.getElementById('thankYouServices').addEventListener('input', updateThankYouMessage);
+            document.getElementById('thankYouRefNumbers').addEventListener('input', updateThankYouMessage);
+        });
+        
+        function loadAllServices() {
+            const savedPredefinedServices = localStorage.getItem('dhassPredefinedServices');
+            if (savedPredefinedServices) { try { predefinedServices = JSON.parse(savedPredefinedServices); } catch (e) { predefinedServices = [...originalPredefinedServices]; } }
+            const savedCustomServices = localStorage.getItem('dhassCustomServices');
+            if (savedCustomServices) { try { customServices = JSON.parse(savedCustomServices); } catch (e) { customServices = []; } }
+            renderServices(); updateServiceCount();
+        }
+        
+        function renderServices() {
+            const grid = document.getElementById('serviceButtonsGrid'); if (!grid) return; grid.innerHTML = '';
+            let filteredServices = [...predefinedServices, ...customServices];
+            if (activeFilter !== 'all') {
+                if (activeFilter === 'custom') { filteredServices = filteredServices.filter(s => !s.isPredefined); }
+                else { filteredServices = filteredServices.filter(s => s.category === activeFilter); }
+            }
+            const searchTerm = document.getElementById('serviceSearch').value.toLowerCase();
+            if (searchTerm) { filteredServices = filteredServices.filter(s => s.name.toLowerCase().includes(searchTerm) || s.category.toLowerCase().includes(searchTerm) || s.description.toLowerCase().includes(searchTerm)); }
+            filteredServices.forEach(service => {
+                const button = document.createElement('div');
+                button.className = `service-btn ${service.isPredefined ? '' : 'custom-service'}`;
+                button.innerHTML = `<div class="service-icon"><i class="${service.icon}"></i></div><div class="service-btn-name">${service.name}</div><div class="service-btn-category">${service.category}</div><div class="service-btn-price">₹${service.price.toFixed(2)}</div>${!service.isPredefined ? `<button class="delete-service-btn" onclick="deleteCustomService(${service.id})"><i class="fas fa-times"></i></button>` : ''}`;
+                button.addEventListener('click', function(e) { e.stopPropagation(); selectService(service); });
+                grid.appendChild(button);
+            });
+            updateServiceCount();
+        }
+        
+        function filterServices(category) {
+            activeFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(btn => { btn.classList.remove('active'); if (btn.textContent.includes(category) || (category === 'all' && btn.textContent.includes('அனைத்தும்'))) { btn.classList.add('active'); } });
+            renderServices();
+        }
+        
+        function updateServiceCount() {
+            document.getElementById('totalServicesCount').textContent = predefinedServices.length + customServices.length;
+            document.getElementById('customServicesCount').textContent = customServices.length;
+            document.getElementById('predefinedServicesCount').textContent = predefinedServices.length;
+        }
+        
+        function selectService(service) {
+            document.querySelectorAll('.service-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            currentService = { ...service, customDocuments: currentService.id === service.id ? (currentService.customDocuments || [...service.documents]) : [...service.documents] };
+            updateDisplay(); updateDocumentsList(); updateWhatsAppMessage(); saveToLocalStorage();
+        }
+        
+        function updateDisplay() {
+            document.getElementById('serviceNameDisplay').textContent = currentService.name;
+            document.getElementById('serviceCategoryDisplay').textContent = currentService.category;
+            document.getElementById('servicePriceDisplay').textContent = `₹${currentService.price.toFixed(2)}`;
+            document.getElementById('serviceDescriptionDisplay').textContent = currentService.description;
+        }
+        
+        function openAddServiceModal() {
+            document.getElementById('newServiceName').value = '';
+            document.getElementById('newServiceCategory').value = 'அரசு சேவை';
+            document.getElementById('newServicePrice').value = '';
+            document.getElementById('newServiceDescription').value = '';
+            document.getElementById('newServiceDocuments').value = '';
+            document.getElementById('newServiceIcon').value = 'fas fa-id-card';
+            document.getElementById('addServiceModal').classList.add('active');
+        }
+        
+        function closeAddServiceModal() { document.getElementById('addServiceModal').classList.remove('active'); }
+        
+        function saveNewService() {
+            const name = document.getElementById('newServiceName').value.trim();
+            const category = document.getElementById('newServiceCategory').value;
+            const price = parseFloat(document.getElementById('newServicePrice').value) || 0;
+            const description = document.getElementById('newServiceDescription').value.trim();
+            const documentsText = document.getElementById('newServiceDocuments').value.trim();
+            const icon = document.getElementById('newServiceIcon').value;
+            if (!name) { alert('தயவு செய்து சேவையின் பெயரை உள்ளிடவும்'); return; }
+            if (!category) { alert('தயவு செய்து சேவை வகையை தேர்ந்தெடுக்கவும்'); return; }
+            if (price <= 0) { alert('தயவு செய்து சரியான கட்டணத்தை உள்ளிடவும்'); return; }
+            const newService = {
+                id: customServices.length > 0 ? Math.max(...customServices.map(s => s.id)) + 1 : 1001,
+                name: name, category: category, price: price, description: description || `${name} சேவை`,
+                icon: icon, documents: documentsText ? documentsText.split('\n').filter(d => d.trim()) : ["விபரங்கள் தேவைப்படும்"], isPredefined: false
+            };
+            customServices.push(newService); saveCustomServicesToStorage(); renderServices(); selectService(newService); closeAddServiceModal();
+            alert(`புதிய சேவை "${name}" வெற்றிகரமாக சேர்க்கப்பட்டது!`);
+        }
+        
+        function deleteCustomService(serviceId) {
+            event.stopPropagation();
+            if (!confirm('இந்த சேவையை நீக்க விரும்புகிறீர்களா?')) return;
+            const isPredefined = predefinedServices.some(s => s.id === serviceId);
+            if (isPredefined) {
+                const originalService = originalPredefinedServices.find(s => s.id === serviceId);
+                if (originalService) {
+                    const index = predefinedServices.findIndex(s => s.id === serviceId);
+                    if (index !== -1) {
+                        predefinedServices[index] = {...originalService};
+                        localStorage.setItem('dhassPredefinedServices', JSON.stringify(predefinedServices));
+                        renderServices();
+                        if (currentService.id === serviceId) { currentService = {...predefinedServices[index]}; updateDisplay(); updateDocumentsList(); }
+                        alert('ரெடிமேட் சேவை அசல் நிலைக்கு மீட்டமைக்கப்பட்டது!'); return;
+                    }
+                }
+            } else {
+                customServices = customServices.filter(s => s.id !== serviceId); saveCustomServicesToStorage();
+            }
+            renderServices();
+            if (currentService.id === serviceId) {
+                currentService = { id: 0, name: "சேவையை தேர்ந்தெடுக்கவும்", category: "சேவை வகை", price: 0, description: "மேலே உள்ள பட்டன்களில் இருந்து ஒரு சேவையை தேர்ந்தெடுக்கவும்", icon: "fas fa-question-circle", documents: ["சேவையை தேர்ந்தெடுக்கவும்"], customDocuments: [], isPredefined: false };
+                updateDisplay(); updateDocumentsList();
+            }
+            alert('சேவை நீக்கப்பட்டது!');
+        }
+        
+        function openEditServiceModal() {
+            if (currentService.id === 0) { alert('திருத்த வேண்டிய சேவையை முதலில் தேர்ந்தெடுக்கவும்'); return; }
+            document.getElementById('editServiceName').value = currentService.name;
+            document.getElementById('editServiceCategory').value = currentService.category;
+            document.getElementById('editServicePrice').value = currentService.price;
+            document.getElementById('editServiceDescription').value = currentService.description || '';
+            document.getElementById('editServiceIcon').value = currentService.icon || 'fas fa-id-card';
+            const allDocuments = [...(currentService.customDocuments || currentService.documents || [])];
+            document.getElementById('editServiceDocuments').value = allDocuments.join('\n');
+            document.getElementById('editServiceModal').classList.add('active');
+        }
+        
+        function closeEditServiceModal() { document.getElementById('editServiceModal').classList.remove('active'); }
+        
+        function saveEditedService() {
+            const name = document.getElementById('editServiceName').value.trim();
+            const category = document.getElementById('editServiceCategory').value;
+            const price = parseFloat(document.getElementById('editServicePrice').value) || 0;
+            const description = document.getElementById('editServiceDescription').value.trim();
+            const documentsText = document.getElementById('editServiceDocuments').value.trim();
+            const icon = document.getElementById('editServiceIcon').value;
+            if (!name) { alert('தயவு செய்து சேவையின் பெயரை உள்ளிடவும்'); return; }
+            if (!category) { alert('தயவு செய்து சேவை வகையை தேர்ந்தெடுக்கவும்'); return; }
+            if (price <= 0) { alert('தயவு செய்து சரியான கட்டணத்தை உள்ளிடவும்'); return; }
+            const updatedService = { ...currentService, name: name, category: category, price: price, description: description || `${name} சேவை`, icon: icon, documents: documentsText ? documentsText.split('\n').filter(d => d.trim()) : ["விபரங்கள் தேவைப்படும்"] };
+            if (currentService.isPredefined) {
+                const serviceIndex = predefinedServices.findIndex(s => s.id === currentService.id);
+                if (serviceIndex !== -1) { predefinedServices[serviceIndex] = updatedService; localStorage.setItem('dhassPredefinedServices', JSON.stringify(predefinedServices)); currentService = updatedService; }
+            } else {
+                const serviceIndex = customServices.findIndex(s => s.id === currentService.id);
+                if (serviceIndex !== -1) { customServices[serviceIndex] = updatedService; saveCustomServicesToStorage(); currentService = updatedService; }
+            }
+            saveToLocalStorage(); renderServices(); updateDisplay(); updateDocumentsList(); updateWhatsAppMessage(); closeEditServiceModal();
+            alert(`சேவை "${name}" வெற்றிகரமாக திருத்தப்பட்டது!`);
+        }
+        
+        function openAddDocumentModal() { document.getElementById('addDocumentModal').classList.add('active'); }
+        function closeAddDocumentModal() { document.getElementById('addDocumentModal').classList.remove('active'); }
+        
+        function addDocument() {
+            const newDoc = document.getElementById('newDocument').value.trim();
+            if (newDoc) {
+                if (!currentService.customDocuments) { currentService.customDocuments = [...currentService.documents]; }
+                currentService.customDocuments.push(newDoc);
+                saveToLocalStorage(); updateDocumentsList(); closeAddDocumentModal(); updateWhatsAppMessage();
+                document.getElementById('newDocument').value = ''; alert('புதிய ஆவணம் சேர்க்கப்பட்டது!');
+            }
+        }
+        
+        function openEditDocumentModal() {
+            if (currentService.id === 0) { alert('முதலில் ஒரு சேவையை தேர்ந்தெடுக்கவும்'); return; }
+            const allDocuments = [...(currentService.customDocuments || currentService.documents || [])];
+            const editDocModal = document.createElement('div');
+            editDocModal.className = 'modal active'; editDocModal.id = 'editDocumentModal';
+            editDocModal.innerHTML = `<div class="modal-content"><div class="modal-header">ஆவணங்களை திருத்து</div><div style="margin-bottom: 15px;"><label style="display: block; font-weight: 600; margin-bottom: 6px;">ஆவணங்கள் (ஒவ்வொரு வரியிலும் ஒன்று)</label><textarea id="editDocumentsText" class="modal-textarea" placeholder="ஆதார் கார்டு
+புகைப்படம்
+முகவரி சான்று" style="min-height: 150px;">${allDocuments.join('\n')}</textarea></div><div class="modal-buttons"><button type="button" class="btn-add" onclick="saveEditedDocuments()">சேமி</button><button type="button" class="btn-cancel" onclick="closeEditDocumentModal()">ரத்து</button></div></div>`;
+            document.body.appendChild(editDocModal);
+        }
+        
+        function saveEditedDocuments() {
+            const editedText = document.getElementById('editDocumentsText').value.trim();
+            if (editedText) {
+                const newDocuments = editedText.split('\n').filter(d => d.trim());
+                currentService.customDocuments = newDocuments;
+                if (currentService.isPredefined) {
+                    const serviceIndex = predefinedServices.findIndex(s => s.id === currentService.id);
+                    if (serviceIndex !== -1) {
+                        predefinedServices[serviceIndex] = { ...predefinedServices[serviceIndex], customDocuments: newDocuments };
+                        localStorage.setItem('dhassPredefinedServices', JSON.stringify(predefinedServices));
+                    }
+                }
+                saveToLocalStorage(); updateDocumentsList(); closeEditDocumentModal(); updateWhatsAppMessage();
+                alert('ஆவணங்கள் திருத்தப்பட்டன!');
+            }
+        }
+        
+        function closeEditDocumentModal() { const modal = document.getElementById('editDocumentModal'); if (modal) { modal.remove(); } }
+        
+        function updateDocumentsList() {
+            const allDocuments = [...(currentService.customDocuments || currentService.documents || [])];
+            const documentsList = document.getElementById('documentsList'); documentsList.innerHTML = '';
+            if (allDocuments.length === 0) {
+                documentsList.innerHTML = `<li class="document-item"><i class="fas fa-info-circle"></i><span>ஆவணங்கள் தேவைப்படவில்லை</span></li>`;
+            } else {
+                allDocuments.forEach((doc, index) => {
+                    const li = document.createElement('li'); li.className = 'document-item';
+                    li.innerHTML = `<i class="fas fa-file-alt"></i><span style="flex: 1;">${doc}</span>`;
+                    documentsList.appendChild(li);
+                });
+            }
+        }
+        
+        function updateWhatsAppMessage() {
+            const customerName = document.getElementById('customerName').value || 'வாடிக்கையாளர்';
+            let message = `தாஸ் பொது சேவை மையம் - சேவை விபரங்கள்\n\nவணக்கம் ${customerName}!\n\nசேவை: ${currentService.name}\nசேவை வகை: ${currentService.category}\nகட்டணம்: ₹${currentService.price.toFixed(2)}\n\n`;
+            if (currentService.description) { message += `விளக்கம்: ${currentService.description}\n\n`; }
+            const allDocuments = [...(currentService.customDocuments || currentService.documents || [])];
+            if (allDocuments.length > 0) {
+                message += `தேவையான ஆவணங்கள்:\n`; allDocuments.forEach((doc, index) => { message += `✓ ${doc}\n`; }); message += `\n`;
+            }
+            message += `தொடர்பு கொள்ள:\n📞 8870232332\n📞 9843232324 (WhatsApp)\n📍 தூத்துக்குடி-1\n\nநன்றி! மீண்டும் வருக!`;
+            document.getElementById('messagePreview').textContent = message;
+        }
+        
+        function testWhatsAppMessage() {
+            const customerName = document.getElementById('customerName').value || 'வாடிக்கையாளர்';
+            let message = `தாஸ் பொது சேவை மையம் - சேவை விபரங்கள்\n\nவணக்கம் ${customerName}!\n\nசேவை: ${currentService.name}\nசேவை வகை: ${currentService.category}\nகட்டணம்: ₹${currentService.price.toFixed(2)}\n\n`;
+            if (currentService.description) { message += `விளக்கம்: ${currentService.description}\n\n`; }
+            const allDocuments = [...(currentService.customDocuments || currentService.documents || [])];
+            if (allDocuments.length > 0) {
+                message += `தேவையான ஆவணங்கள்:\n`; allDocuments.forEach((doc, index) => { message += `✓ ${doc}\n`; }); message += `\n`;
+            }
+            message += `தொடர்பு கொள்ள:\n📞 8870232332\n📞 9843232324 (WhatsApp)\n📍 தூத்துக்குடி-1\n\nநன்றி! மீண்டும் வருக!`;
+            alert('WhatsApp செய்தி முன்னோட்டம்:\n\n' + message);
+        }
+        
+        function sendWhatsAppMessage() {
+            const customerName = document.getElementById('customerName').value;
+            const customerPhone = document.getElementById('customerPhone').value;
+            if (!customerName || !customerPhone) { alert('தயவு செய்து வாடிக்கையாளர் பெயர் மற்றும் தொலைபேசி எண்ணை உள்ளிடவும்'); return; }
+            const phoneRegex = /^[6-9]\d{9}$/; const cleanPhone = customerPhone.replace(/\D/g, '');
+            if (!phoneRegex.test(cleanPhone)) { alert('தயவு செய்து செல்லுபடியான இந்திய தொலைபேசி எண்ணை உள்ளிடவும் (10 இலக்கங்கள்)\n\nஎ.கா: 9843232324'); return; }
+            let message = `தாஸ் பொது சேவை மையம் - சேவை விபரங்கள்%0A%0Aவணக்கம் ${encodeURIComponent(customerName)}!%0A%0Aசேவை: ${encodeURIComponent(currentService.name)}%0Aசேவை வகை: ${encodeURIComponent(currentService.category)}%0Aகட்டணம்: ₹${currentService.price.toFixed(2)}%0A%0A`;
+            if (currentService.description) { message += `விளக்கம்: ${encodeURIComponent(currentService.description)}%0A%0A`; }
+            const allDocuments = [...(currentService.customDocuments || currentService.documents || [])];
+            if (allDocuments.length > 0) { message += `தேவையான ஆவணங்கள்:%0A`; allDocuments.forEach((doc, index) => { message += `✓ ${encodeURIComponent(doc)}%0A`; }); message += `%0A`; }
+            message += `தொடர்பு கொள்ள:%0A📞 8870232332%0A📞 9843232324 (WhatsApp)%0A📍 தூத்துக்குடி-1%0A%0Aநன்றி! மீண்டும் வருக!`;
+            const whatsappUrl = `https://wa.me/91${cleanPhone}?text=${message}`;
+            window.open(whatsappUrl, '_blank'); saveCustomerInfo(customerName, cleanPhone);
+            alert(`WhatsApp செய்தி அனுப்பப்பட்டது!\n\n${customerName} (${cleanPhone})`);
+        }
+        
+        // நன்றி செய்தி முன்னோட்டத்தை புதுப்பிக்க
+        function updateThankYouMessage() {
+            const customerName = document.getElementById('thankYouCustomerName').value || 'பெயர்';
+            const services = document.getElementById('thankYouServices').value || '[சேவைகள்]';
+            const refNumbers = document.getElementById('thankYouRefNumbers').value || '[குறிப்பு எண்கள்]';
+            
+            let message = `வணக்கம் ${customerName}!\n\n`;
+            message += `எங்கள் தாஸ் பொதுசேவை மையத்தை தேர்வு செய்து, வருகை புரிந்தமைக்கு, மிகவும் நன்றி.\n\n`;
+            message += `சேவைகள்: ${services}\n`;
+            message += `குறிப்பு எண்கள்: ${refNumbers}\n\n`;
+            message += `இந்த நாள் இனிதாக அமைய வாழ்த்துகிறோம்.\n\n`;
+            message += `நன்றி!\nதாஸ் பொது சேவை மையம்\nதூத்துக்குடி-1`;
+            
+            document.getElementById('thankYouMessagePreview').textContent = message;
+        }
+
+        // நன்றி செய்தி சோதனை
+        function testThankYouMessage() {
+            const customerName = document.getElementById('thankYouCustomerName').value || 'பெயர்';
+            const services = document.getElementById('thankYouServices').value || '[சேவைகள்]';
+            const refNumbers = document.getElementById('thankYouRefNumbers').value || '[குறிப்பு எண்கள்]';
+            
+            let message = `வணக்கம் ${customerName}!\n\n`;
+            message += `எங்கள் தாஸ் பொதுசேவை மையத்தை தேர்வு செய்து, வருகை புரிந்தமைக்கு, மிகவும் நன்றி.\n\n`;
+            message += `சேவைகள்: ${services}\n`;
+            message += `குறிப்பு எண்கள்: ${refNumbers}\n\n`;
+            message += `இந்த நாள் இனிதாக அமைய வாழ்த்துகிறோம்.\n\n`;
+            message += `நன்றி!\nதாஸ் பொது சேவை மையம்\nதூத்துக்குடி-1`;
+            
+            alert('நன்றி செய்தி முன்னோட்டம்:\n\n' + message);
+        }
+
+        // நன்றி செய்தி அனுப்புதல்
+        function sendThankYouMessage() {
+            const customerName = document.getElementById('thankYouCustomerName').value;
+            const customerPhone = document.getElementById('thankYouCustomerPhone').value;
+            const services = document.getElementById('thankYouServices').value;
+            const refNumbers = document.getElementById('thankYouRefNumbers').value;
+            
+            if (!customerName || !customerPhone) {
+                alert('தயவு செய்து வாடிக்கையாளர் பெயர் மற்றும் தொலைபேசி எண்ணை உள்ளிடவும்');
+                return;
+            }
+            
+            const phoneRegex = /^[6-9]\d{9}$/;
+            const cleanPhone = customerPhone.replace(/\D/g, '');
+            
+            if (!phoneRegex.test(cleanPhone)) {
+                alert('தயவு செய்து செல்லுபடியான இந்திய தொலைபேசி எண்ணை உள்ளிடவும் (10 இலக்கங்கள்)');
+                return;
+            }
+            
+            let message = `வணக்கம் ${encodeURIComponent(customerName)}!%0A%0A`;
+            message += `எங்கள் தாஸ் பொதுசேவை மையத்தை தேர்வு செய்து, வருகை புரிந்தமைக்கு, மிகவும் நன்றி.%0A%0A`;
+            message += `சேவைகள்: ${encodeURIComponent(services || '')}%0A`;
+            message += `குறிப்பு எண்கள்: ${encodeURIComponent(refNumbers || '')}%0A%0A`;
+            message += `இந்த நாள் இனிதாக அமைய வாழ்த்துகிறோம்.%0A%0A`;
+            message += `நன்றி!%0Aதாஸ் பொது சேவை மையம்%0Aதூத்துக்குடி-1`;
+            
+            const whatsappUrl = `https://wa.me/91${cleanPhone}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+            
+            alert(`நன்றி செய்தி அனுப்பப்பட்டது!\n\n${customerName} (${cleanPhone})`);
+        }
+        
+        function saveServiceInfo() { saveToLocalStorage(); alert('சேவை விபரங்கள் வெற்றிகரமாக சேமிக்கப்பட்டன!'); }
+        function saveToLocalStorage() { localStorage.setItem('dhassCurrentService', JSON.stringify(currentService)); }
+        
+        function loadSavedData() {
+            const savedService = localStorage.getItem('dhassCurrentService');
+            if (savedService) { try { const parsed = JSON.parse(savedService); currentService = { ...currentService, ...parsed }; updateDisplay(); updateDocumentsList(); } catch (e) { console.error("Error loading saved service:", e); } }
+            const lastCustomer = localStorage.getItem('lastCustomer');
+            if (lastCustomer) { try { const customer = JSON.parse(lastCustomer); document.getElementById('customerName').value = customer.name || ''; document.getElementById('customerPhone').value = customer.phone || ''; } catch (e) { console.error("Error loading customer info:", e); } }
+            updateWhatsAppMessage();
+            updateThankYouMessage();
+        }
+        
+        function saveCustomerInfo(name, phone) {
+            const customerInfo = { name: name, phone: phone, date: new Date().toISOString(), service: currentService.name };
+            localStorage.setItem('lastCustomer', JSON.stringify(customerInfo));
+        }
+        
+        function saveCustomServicesToStorage() { localStorage.setItem('dhassCustomServices', JSON.stringify(customServices)); }
+        
+        function resetPredefinedServices() {
+            if (confirm('ரெடிமேட் சேவைகளை அசல் நிலைக்கு மீட்டமைக்க விரும்புகிறீர்களா?\n\nஇது உங்கள் திருத்தங்களை அழிக்கும்!')) {
+                predefinedServices = [...originalPredefinedServices]; localStorage.removeItem('dhassPredefinedServices');
+                if (currentService.isPredefined) {
+                    const originalService = originalPredefinedServices.find(s => s.id === currentService.id);
+                    if (originalService) { currentService = {...originalService}; updateDisplay(); updateDocumentsList(); }
+                }
+                renderServices(); alert('ரெடிமேட் சேவைகள் அசல் நிலைக்கு மீட்டமைக்கப்பட்டன!');
+            }
+        }
+        
+        function clearAll() {
+            if (confirm('அனைத்து தகவல்களையும் அழிக்க விரும்புகிறீர்களா?\n\nஇது கஸ்டம் சேவைகள் உட்பட எல்லாவற்றையும் அழிக்கும்!')) {
+                currentService = { id: 0, name: "சேவையை தேர்ந்தெடுக்கவும்", category: "சேவை வகை", price: 0, description: "மேலே உள்ள பட்டன்களில் இருந்து ஒரு சேவையை தேர்ந்தெடுக்கவும்", icon: "fas fa-question-circle", documents: ["சேவையை தேர்ந்தெடுக்கவும்"], customDocuments: [], isPredefined: false };
+                document.getElementById('customerName').value = ''; document.getElementById('customerPhone').value = '';
+                document.getElementById('thankYouCustomerName').value = ''; document.getElementById('thankYouCustomerPhone').value = '';
+                document.getElementById('thankYouServices').value = ''; document.getElementById('thankYouRefNumbers').value = '';
+                document.querySelectorAll('.service-btn').forEach(btn => btn.classList.remove('active'));
+                updateDocumentsList(); localStorage.removeItem('dhassCurrentService'); localStorage.removeItem('lastCustomer');
+                localStorage.removeItem('dhassCustomServices'); localStorage.removeItem('dhassPredefinedServices');
+                predefinedServices = [...originalPredefinedServices]; customServices = [];
+                updateDisplay(); updateWhatsAppMessage(); updateThankYouMessage(); renderServices(); alert('அனைத்து தகவல்களும் அழிக்கப்பட்டன!');
+            }
+        }
+        
+        function printPage() {
+            const allDocuments = [...(currentService.customDocuments || currentService.documents || [])];
+            const printContent = `<!DOCTYPE html><html><head><title>தாஸ் பொது சேவை மையம் - சேவை விபரங்கள்</title><style>body { font-family: Arial, sans-serif; padding: 20px; } .header { text-align: center; border-bottom: 3px solid #4F46E5; padding-bottom: 20px; margin-bottom: 30px; } .header h1 { color: #4F46E5; } .service-info { margin-bottom: 30px; } .service-name { font-size: 24px; font-weight: bold; color: #1F2937; margin-bottom: 10px; } .service-price { font-size: 20px; color: #059669; font-weight: bold; } .documents { margin-top: 20px; } .document-item { margin-bottom: 10px; padding-left: 20px; position: relative; } .document-item:before { content: "✓"; position: absolute; left: 0; color: #059669; } .contact-info { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; } .print-date { text-align: right; color: #666; margin-bottom: 20px; } .description { background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 15px 0; }</style></head><body><div class="print-date">அச்சிடப்பட்ட தேதி: ${new Date().toLocaleDateString('ta-IN')}</div><div class="header"><h1>தாஸ் பொது சேவை மையம்</h1><p>Thoothukudi-1 - சேவை விபரங்கள்</p></div><div class="service-info"><div class="service-name">${currentService.name}</div><div style="color: #6B7280; margin-bottom: 10px;">${currentService.category}</div><div class="service-price">கட்டணம்: ₹${currentService.price.toFixed(2)}</div>${currentService.description ? `<div class="description"><strong>விளக்கம்:</strong><br>${currentService.description}</div>` : ''}${allDocuments.length > 0 ? `<div class="documents"><h3 style="color: #4F46E5; margin-bottom: 15px;">தேவையான ஆவணங்கள்:</h3>${allDocuments.map(doc => `<div class="document-item">${doc}</div>`).join('')}</div>` : ''}</div><div class="contact-info"><h3 style="color: #4F46E5; margin-bottom: 10px;">தொடர்பு கொள்ள:</h3><p>📞 88 70 23 23 32 / 98 43 23 23 24</p><p>📧 dhasscsc@example.com</p><p>📍 தூத்துக்குடி-1</p></div><div style="text-align: center; margin-top: 40px; color: #666; font-size: 14px;"><p>நன்றி! மீண்டும் வருக!</p></div></body></html>`;
+            const printWindow = window.open('', '_blank'); printWindow.document.write(printContent); printWindow.document.close(); printWindow.focus();
+            setTimeout(() => { printWindow.print(); }, 250);
+        }
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveServiceInfo(); }
+            if (e.ctrlKey && e.key === 'p') { e.preventDefault(); printPage(); }
+            if (e.ctrlKey && e.key === 'e') { e.preventDefault(); openEditServiceModal(); }
+            if (e.ctrlKey && e.key === 'd') { e.preventDefault(); openEditDocumentModal(); }
+            if (e.key === 'Escape') { closeAddDocumentModal(); closeEditServiceModal(); closeAddServiceModal(); closeEditDocumentModal(); }
+        });
+        setInterval(saveToLocalStorage, 30000); setInterval(saveCustomServicesToStorage, 30000);
+    </script>
+</body>
+</html>
